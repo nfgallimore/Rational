@@ -139,53 +139,111 @@ Rational::Rational(int n, int d) {
 // FFTF
 // FFFT
 
+//bool Rational::operator==(Rational& obj) {
+//    return
+//    (obj.num() == 0 && num() == 0)
+//        ? 1
+//    : (obj.num() == num() && obj.den() == den())
+//        ? 1
+//    : (obj.den() == 0 && den() == 0 && (obj.num() != 0 || num() != 0))
+//        ? throw "Cannot divide non zero value by zero"
+//    : (obj.den() != 0 && den() != 0)
+//        ? lcm(obj.den(), den()) / den() * num() == lcm(obj.den(), den()) / obj.den() * obj.num()
+//        : ((obj.num() / obj.den()) == (num() / den()));
+//}
+
 bool Rational::operator==(Rational& obj) {
-    return
-    (obj.num() == 0 && num() == 0)
-        ? 1
-    : (obj.num() == num() && obj.den() == den())
-        ? 1
-    : (obj.den() == 0 && den() == 0 && (obj.num() != 0 || num() != 0))
-        ? throw "Cannot divide non zero value by zero"
-    : (obj.den() != 0 && den() != 0)
-        ? lcm(obj.den(), den()) / den() * num() == lcm(obj.den(), den()) / obj.den() * obj.num()
-        : ((obj.num() / obj.den()) == (num() / den()));
+    // both nums 0
+    if (obj.num() == 0 && num() == 0) {
+        return true;
+    }
+    // both nums same and both dens same
+    else if (obj.num() == num() && obj.den() == den()) {
+        return true;
+    }
+    // if both denominators are 0 and at least one of the numerators is not 0
+    else if (obj.den() == 0 && den() == 0 && (obj.num() != 0 || num() != 0)) {
+        throw "Non zero numerator with zero denominator";
+    }
+    if (obj.den() == den()) {
+        return (num() == obj.num());
+    }
+    // both denominators have values
+    else if (obj.den() != 0 && den() != 0) {
+        double commonMult = (double)lcm(obj.den(), den())
+        , commonDiv = ((double)gcd(obj.den(), den()))
+        , commonTerm = ((commonMult > commonDiv) && (commonDiv != 1)) ? commonDiv : commonMult
+        
+        // using memory for clarity
+        , factor1 = commonTerm / den()
+        , factor2 = commonTerm / obj.den()
+        
+        , numerator1 = factor1 * num()
+        , numerator2 = factor2 * obj.num();
+        
+        return numerator1 == numerator2;
+        
+    }
+    // must be case 0/0 == 0/0
+    else return true;
 }
 
+
+
 bool Rational::operator!=(Rational& obj) {
-    return (gcd(obj.denominator, denominator) / denominator * numerator) != (gcd(obj.denominator, denominator) / obj.denominator * obj.numerator);
+    return ((double)gcd(obj.den(), den()) != 1)
+    ? ((double)gcd(obj.den(), den()) / den() * num()) != ((double)gcd(obj.den(), den()) / obj.den() * obj.num())
+    : ((double)lcm(obj.den(), den()) / den() * num()) != ((double)lcm(obj.den(), den()) / obj.den() * obj.num());
 }
 
 bool Rational::operator<(Rational& obj) {
-    return (obj.num() == 0 && num() == 0) ? 1 : (gcd(obj.denominator, denominator) / denominator * numerator) < (gcd(obj.denominator, denominator) / obj.denominator * obj.numerator);
+    return ((double)gcd(obj.den(), den()) != 1)
+    ? ((double)gcd(obj.den(), den()) / den() * num()) < ((double)gcd(obj.den(), den()) / obj.den() * obj.num())
+    : ((double)lcm(obj.den(), den()) / den() * num()) < ((double)lcm(obj.den(), den()) / obj.den() * obj.num());
 }
 
 bool Rational::operator>(Rational& obj) {
-    return (obj.num() == 0 && num() == 0) ? 1 : (gcd(obj.denominator, denominator) / denominator * numerator)
-    > (gcd(obj.denominator, denominator) / obj.denominator * obj.numerator);
+    return ((double)gcd(obj.den(), den()) != 1)
+    ? ((double)gcd(obj.den(), den()) / den() * num()) > ((double)gcd(obj.den(), den()) / obj.den() * obj.num())
+    : ((double)lcm(obj.den(), den()) / den() * num()) > ((double)lcm(obj.den(), den()) / obj.den() * obj.num());
 }
 
 bool Rational::operator>=(Rational& obj) {
-    return (obj.num() == 0 && num() == 0) ? 1 : (gcd(obj.denominator, denominator) / denominator * numerator)
-    >= (gcd(obj.denominator, denominator) / obj.denominator * obj.numerator);
+    return ((double)gcd(obj.den(), den()) != 1)
+    ? ((double)gcd(obj.den(), den()) / den() * num()) >= ((double)gcd(obj.den(), den()) / obj.den() * obj.num())
+    : ((double)lcm(obj.den(), den()) / den() * num()) >= ((double)lcm(obj.den(), den()) / obj.den() * obj.num());
 }
 bool Rational::operator<=(Rational& obj) {
-    return (obj.num() == 0 && num() == 0) ? 1 : (gcd(obj.denominator, denominator) / denominator * numerator)
-    <= (gcd(obj.denominator, denominator) / obj.denominator * obj.numerator);
+    return ((double)gcd(obj.den(), den()) != 1)
+    ? ((double)gcd(obj.den(), den()) / den() * num()) <= ((double)gcd(obj.den(), den()) / obj.den() * obj.num())
+    : ((double)lcm(obj.den(), den()) / den() * num()) <= ((double)lcm(obj.den(), den()) / obj.den() * obj.num());
 }
 
 // Arithmetic operators
 Rational& Rational::operator+(Rational& obj) {
-    return (obj.num() == 0 && num() == 0) ? *new Rational(0, 0) : *(new Rational(gcd(obj.den(), denominator) / denominator * numerator + (gcd(obj.den(), denominator) / obj.den() * obj.num()), gcd(obj.den(), denominator)));
+    return ((double)gcd(obj.den(), den()) != 1)
+    ? (obj.num() == 0 && num() == 0) ? *new Rational(0, 0) : *(new Rational((double)gcd(obj.den(), den()) / den() * num() + ((double)gcd(obj.den(), den()) / obj.den() * obj.num()), (double)gcd(obj.den(), den())))
+    : (obj.num() == 0 && num() == 0) ? *new Rational(0, 0) : *(new Rational((double)lcm(obj.den(), den()) / den() * num() + ((double)lcm(obj.den(), den()) / obj.den() * obj.num()), (double)gcd(obj.den(), den())));
 }
 
 Rational& Rational::operator-(Rational& obj) {
-    return (obj.num() == 0 && num() == 0) ? *new Rational(0, 0) : *(new Rational(gcd(obj.den(), denominator) / denominator * numerator - (gcd(obj.den(), denominator) / obj.den() * obj.num()), gcd(obj.den(), denominator)));
+    return ((double)gcd(obj.den(), den()) != 1)
+    ? (obj.num() == 0 && num() == 0) ? *new Rational(0, 0) : *(new Rational((double)gcd(obj.den(), den()) / den() * num() - ((double)gcd(obj.den(), den()) / obj.den() * obj.num()), (double)gcd(obj.den(), den())))
+    : (obj.num() == 0 && num() == 0) ? *new Rational(0, 0) : *(new Rational((double)lcm(obj.den(), den()) / den() * num() - ((double)lcm(obj.den(), den()) / obj.den() * obj.num()), (double)gcd(obj.den(), den())));
 }
 Rational& Rational::operator*(Rational& obj) {
-    return (obj.num() == 0 && num() == 0) ? *new Rational(0, 0) : *new Rational(obj.num() * numerator, obj.den() * denominator);
+    int gcd1 = (double)gcd(obj.num(), obj.den()), gcd2 = (double)gcd(num(), den());
+    return (obj.num() == 0 && num() == 0)
+        ? *new Rational(0, 0)
+        : (gcd1 != 1) && (gcd2 != 1)
+            ? *new Rational(gcd1 * gcd2, 1)
+            : *new Rational(obj.num() * num(), obj.den() * den());
 }
 Rational& Rational::operator/(Rational& obj) {
-    return (obj.num() == 0 && num() == 0) ? *new Rational(0, 0) : *new Rational(obj.num() / numerator, obj.den() / denominator);
-
+    int gcd1 = (double)gcd(num(), den()), gcd2 = (double)gcd(obj.num(), obj.den());
+    return (obj.num() == 0 && num() == 0)
+        ? *new Rational(0, 0)
+        : (gcd1 != 1) && (gcd2 != 1)
+            ? *new Rational(gcd1 / gcd2, 1)
+            : *new Rational(num() / obj.num(), den() / obj.den());
 }

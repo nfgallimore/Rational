@@ -132,7 +132,7 @@ main()
     if (!std::cin)
       break;
 
-    // FIXME: Add all of the other overlaoded operators by adding
+    // FIXME: Add all of the other overloaded operators by adding
     // cases for each of them.
     if (op == "==")
       std::cout << std::boolalpha << (r1 == r2) << '\n';

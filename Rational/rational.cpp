@@ -97,8 +97,110 @@ operator>>(std::istream& is, Rational& r)
 #endif
 }
 
+Rational::Rational() {
+    numerator = 0; denominator = 0;
+}
+
+Rational::Rational(int n) {
+    numerator = n, denominator = 1;
+}
+
+Rational::Rational(int n, int d) {
+    numerator = n;
+    denominator = d;
+}
+
+// num1zero?
+// num2zero?
+// den1zero?
+// den2zero?
+
+// 4 T's
+// TTTT
+// FFFF
+
+// 3 T's
+// TTTF
+// TTFT
+// TFTT
+// FTTT
+
+// 2 T's
+// TTFF
+// FFTT
+// TFFT
+// FTTF
+// FTFT
+// TFTF
+
+// 1 T
+// TFFF
+// FTFF
+// FFTF
+// FFFT
 
 
+bool Rational::operator==(Rational& obj) {
+    if (obj.num() == 0 && num() == 0) {
+        return true;
+    }
+    // if both nums same and both dens same
+    else if (obj.num() == num() && obj.den() == den()) {
+        return true;
+    }
+    // if both denominators are 0 and at least one of the numerators is not 0
+    else if (obj.den() == 0 && den() == 0 && (obj.num() != 0 || num() != 0)) {
+        throw "Cannot divide non zero value by zero";
+    }
+    else if (obj.den() != 0 && den() != 0) {
+        int commonTerm = lcm(obj.den(), den());
+        int factor1 = commonTerm / den();
+        int factor2 = commonTerm / obj.den();
+        
+        int numerator1 = factor1 * num();
+        int numerator2 = factor2 * obj.num();
+        
+        return numerator1 == numerator2;
+        
+    }
+    else return ((obj.num() / obj.den()) == (num() / den()));
+}
 
 
+bool Rational::operator!=(Rational& obj) {
+    return (gcd(obj.denominator, denominator) / denominator * numerator) != (gcd(obj.denominator, denominator) / obj.denominator * obj.numerator);
+}
 
+bool Rational::operator<(Rational& obj) {
+    return (gcd(obj.denominator, denominator) / denominator * numerator) < (gcd(obj.denominator, denominator) / obj.denominator * obj.numerator);
+}
+
+bool Rational::operator>(Rational& obj) {
+    return (gcd(obj.denominator, denominator) / denominator * numerator)
+    > (gcd(obj.denominator, denominator) / obj.denominator * obj.numerator);
+}
+
+bool Rational::operator>=(Rational& obj) {
+    return (gcd(obj.denominator, denominator) / denominator * numerator)
+    >= (gcd(obj.denominator, denominator) / obj.denominator * obj.numerator);
+}
+bool Rational::operator<=(Rational& obj) {
+    return (gcd(obj.denominator, denominator) / denominator * numerator)
+    <= (gcd(obj.denominator, denominator) / obj.denominator * obj.numerator);
+}
+
+// Arithmetic operators
+Rational& Rational::operator+(Rational& obj) {
+    return *(new Rational(gcd(obj.den(), denominator) / denominator * numerator + (gcd(obj.den(), denominator) / obj.den() * obj.num()), gcd(obj.den(), denominator)));
+}
+
+Rational& Rational::operator-(Rational& obj) {
+    return *(new Rational(gcd(obj.den(), denominator) / denominator * numerator - (gcd(obj.den(), denominator) / obj.den() * obj.num()), gcd(obj.den(), denominator)));
+}
+Rational& Rational::operator*(Rational& obj) {
+    return *new Rational(obj.num() * numerator, obj.den() * denominator);
+}
+Rational& Rational::operator/(Rational& obj) {
+    return *new Rational(obj.num() / numerator, obj.den() / denominator);
+
+}

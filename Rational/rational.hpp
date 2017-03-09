@@ -48,10 +48,10 @@ public:
     bool operator<=(Rational&);
     
     // Arithmetic operators
-    Rational& operator+(Rational);
-    Rational& operator-(Rational);
-    Rational& operator*(Rational);
-    Rational& operator/(Rational);
+    Rational& operator+(Rational&);
+    Rational& operator-(Rational&);
+    Rational& operator*(Rational&);
+    Rational& operator/(Rational&);
 
 private:
     int numerator, denominator;

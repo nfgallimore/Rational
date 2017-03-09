@@ -115,17 +115,17 @@ Rational::Rational(int n, int d) {
 // den1zero?
 // den2zero?
 
-// 4 T's
+// 4 T's / 4 F's
 // TTTT
 // FFFF
 
-// 3 T's
+// 3 T's / 1 F
 // TTTF
 // TTFT
 // TFTT
 // FTTT
 
-// 2 T's
+// 2 T's / 2 F's
 // TTFF
 // FFTT
 // TFFT
@@ -133,7 +133,7 @@ Rational::Rational(int n, int d) {
 // FTFT
 // TFTF
 
-// 1 T
+// 1 T / 3 F's
 // TFFF
 // FTFF
 // FFTF

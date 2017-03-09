@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E24CEDD81E71D24900179297 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E24CEDD71E71D24900179297 /* main.cpp */; };
+		E24CEDE61E71D30200179297 /* test_rational.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E24CEDE31E71D30200179297 /* test_rational.cpp */; };
+		E24CEDE71E71D30200179297 /* rational.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E24CEDE51E71D30200179297 /* rational.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +25,9 @@
 
 /* Begin PBXFileReference section */
 		E24CEDD41E71D24800179297 /* Rational */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Rational; sourceTree = BUILT_PRODUCTS_DIR; };
-		E24CEDD71E71D24900179297 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		E24CEDE31E71D30200179297 /* test_rational.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = test_rational.cpp; sourceTree = "<group>"; };
+		E24CEDE41E71D30200179297 /* rational.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = rational.hpp; sourceTree = "<group>"; };
+		E24CEDE51E71D30200179297 /* rational.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rational.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +60,9 @@
 		E24CEDD61E71D24900179297 /* Rational */ = {
 			isa = PBXGroup;
 			children = (
-				E24CEDD71E71D24900179297 /* main.cpp */,
+				E24CEDE31E71D30200179297 /* test_rational.cpp */,
+				E24CEDE41E71D30200179297 /* rational.hpp */,
+				E24CEDE51E71D30200179297 /* rational.cpp */,
 			);
 			path = Rational;
 			sourceTree = "<group>";
@@ -119,7 +124,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E24CEDD81E71D24900179297 /* main.cpp in Sources */,
+				E24CEDE61E71D30200179297 /* test_rational.cpp in Sources */,
+				E24CEDE71E71D30200179297 /* rational.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

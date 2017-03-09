@@ -252,6 +252,7 @@
 				E24CEDDD1E71D24900179297 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

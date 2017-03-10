@@ -256,7 +256,7 @@ bool Rational::operator!=(Rational& obj) {
 /** less than and greater than operators < > < > < > < */
 /***********/
 
-// same logic as == operator, except returns (numerator1 < numerator2)
+// same logic as == operator, except returns (numerator1 < numerator2) see lines 192-240
 bool Rational::operator<(Rational& obj) {
     return ((double)gcd(obj.den(), den()) != 1)
     ? ((double)gcd(obj.den(), den()) / den() * num()) < ((double)gcd(obj.den(), den()) / obj.den() * obj.num())

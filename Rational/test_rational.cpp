@@ -1,4 +1,4 @@
-// $NAME <$ID@uakron.edu>
+// Nicholas Gallimore <nfg3@zips.uakron.edu>
 //
 // main.cpp: rational number test suite
 #include <string>

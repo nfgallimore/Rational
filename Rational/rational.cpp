@@ -43,14 +43,20 @@ lcm(int a, int b)
 double
 simplify(int a, int b) {
     double div = gcd(a, b);
+    if (a == 0 || b == 0) return 1;
     return (div != 1) ? div : lcm(a, b);
 }
 
+Rational&
+simplify(Rational& obj) {
+    double factor = simplify(obj.num(), obj.den());
+    return * new Rational(obj.num() / factor, obj.den() / factor);
+}
 // -------------------------------------------------------------------------- //
 // Rational implementation
 
 
-//DO NOT CHANGE operators << and >> overloading functions
+// operators << and >> overloading functions
 std::ostream&
 operator<<(std::ostream& os, Rational r)
 {
@@ -102,81 +108,139 @@ operator>>(std::istream& is, Rational& r)
 #endif
 }
 
-/** Constructors */
 
-Rational::Rational() {
+// -------------------------------------------------------------------------- //
+// Constructors
+
+
+// Default construcotr
+Rational::Rational()
+{
     numerator = 0; denominator = 0;
 }
 
-Rational::Rational(int n) {
+// Integer constructor
+Rational::Rational(int n)
+{
     numerator = n, denominator = 1;
 }
 
-Rational::Rational(int n, int d) {
+// Fraction constructor
+Rational::Rational(int n, int d)
+{
+    // if a numerator with non zero value is being divided by 0
+    if (n != 0 && d == 0) throw "Does not exist: Cannot divide non zero value by zero";
+
     numerator = n;
     denominator = d;
 }
 
-// Equality overview
+
+// -------------------------------------------------------------------------- //
+// Equality Operators
 
 
-// op = OPERATOR(*%+-><=)
+// Equality operand
+bool Rational::operator==(Rational& obj)
+{
+    // finds lowest of gcd and lcm where gcd cannot equal 1
+    double commonTerm = simplify(obj.den(), den());
+    
+    return
+    
+    // if both numerators are zero return true
+    (obj.num() == 0 && num() == 0) ? 1
+    
+    // if both numerators are the same and both denominators are the same return true
+    : (obj.num() == num() && obj.den() == den()) ? 1
 
+    // if they already have same denominators just compare numerators
+    : (obj.den() == den()) ? (num() == obj.num())
+       
+    // If denominators non-zero divide lowest commonTerm by denominator to get scale factor then multiply scale factor by numerator for each to compare numerators
+    : (obj.den() != 0 && den() != 0) ? commonTerm / den() * num() == commonTerm / obj.den() * obj.num()
+    
+    // Must be case 0/0 == 0/0 but the input operator does not support dividing by 0 (e.g., 0/0) so this is extraneous
+    : 1;
+}
 
-/* cases: */
+// Inequality operand
+bool Rational::operator!=(Rational& obj)
+{
+    // finds lowest of gcd and lcm where gcd cannot equal 1
+    double commonTerm = simplify(obj.den(), den());
+    
+    return
+    
+    // if both numerators are zero return false
+    (obj.num() == 0 && num() == 0) ? 0
+    
+    // if both numerators are the same and both denominators are the same return false
+    : (obj.num() == num() && obj.den() == den()) ? 0
+    
+    // if they already have same denominators just compare numerators
+    : (obj.den() == den()) ? (num() != obj.num())
+    
+    // If denominators non-zero divide lowest commonTerm by denominator to get scale factor then multiply scale factor by numerator for each to compare numerators
+    : (obj.den() != 0 && den() != 0) ? commonTerm / den() * num() != commonTerm / obj.den() * obj.num()
+    
+    // Must be case 0/0 != 0/0 but the input operator does not support dividing by 0 (e.g., 0/0) so this is extraneous
+    : 0;
+}
 
+// Less than operand
+bool Rational::operator<(Rational& obj)
+{
+    // finds lowest of gcd and lcm where gcd cannot equal 1
+    double commonTerm = simplify(obj.den(), den());
+    
+    return
+    
+    // if both numerators are zero return false
+    (obj.num() == 0 && num() == 0) ? 0
+    
+    // if both numerators are the same and both denominators are the same return false
+    : (obj.num() == num() && obj.den() == den()) ? 0
+    
+    // if they already have same denominators just compare numerators
+    : (obj.den() == den()) ? (num() < obj.num())
+    
+    // If denominators non-zero divide lowest commonTerm by denominator to get scale factor then multiply scale factor by numerator for each to compare numerators
+    : (obj.den() != 0 && den() != 0) ? commonTerm / den() * num() < commonTerm / obj.den() * obj.num()
+    
+    // Must be case 0/0 < 0/0 but the input operator does not support dividing by 0 (e.g., 0/0) so this is extraneous
+    : 0;
+}
 
-// 0/0 op 0/0
-// 0/1 op 0/1
-// 1/1 op 1/1
-// 2/4 op 1/2
-// n1/d1 op n2/d2
+// Greater than operand
+bool Rational::operator>(Rational& obj)
+{
+    // finds lowest of gcd and lcm where gcd cannot equal 1
+    double commonTerm = simplify(obj.den(), den());
+    
+    return
+    
+    // if both numerators are zero return false
+    (obj.num() == 0 && num() == 0) ? 0
+    
+    // if both numerators are the same and both denominators are the same return false
+    : (obj.num() == num() && obj.den() == den()) ? 0
+    
+    // if they already have same denominators just compare numerators
+    : (obj.den() == den()) ? (num() > obj.num())
+    
+    // If denominators non-zero divide lowest commonTerm by denominator to get scale factor then multiply scale factor by numerator for each to compare numerators
+    : (obj.den() != 0 && den() != 0) ? commonTerm / den() * num() > commonTerm / obj.den() * obj.num()
+    
+    // Must be case 0/0 > 0/0 but the input operator does not support dividing by 0 (e.g., 0/0) so this is extraneous
+    : 0;
+}
 
-// let commonTerm := equal gcd(d1, d2), except if gcd = 1, then := lcm(d1, d2)
-
-/*****
-//      commonTerm / d1 * n1    (OPERATOR)    commonTerm / d2 * n2
-*
-*************/
-
-/* note convert int from the gcd and lcm functions to double! */
-
-
-// bool vars:
-
-// num1zero?
-// num2zero?
-// den1zero?
-// den2zero?
-
-// truth table:
-
-// 4 T's / 4 F's
-// TTTT
-// FFFF
-
-// 3 T's / 1 F
-// TTTF
-// TTFT
-// TFTT
-// FTTT
-
-// 2 T's / 2 F's
-// TTFF
-// FFTT
-// TFFT
-// FTTF
-// FTFT
-// TFTF
-
-// 1 T / 3 F's
-// TFFF
-// FTFF
-// FFTF
-// FFFT
-
-// abstract version
-bool Rational::operator==(Rational& obj) {
+// Greater than or equal to operand
+bool Rational::operator>=(Rational& obj)
+{
+    // finds lowest of gcd and lcm where gcd cannot equal 1
+    double commonTerm = simplify(obj.den(), den());
     
     return
     
@@ -186,101 +250,107 @@ bool Rational::operator==(Rational& obj) {
     // if both numerators are the same and both denominators are the same return true
     : (obj.num() == num() && obj.den() == den()) ? 1
     
-    // if both denominators are 0 and at least one of the numerators is not 0 throw exception
-    : (obj.den() == 0 && den() == 0 && (obj.num() != 0 || num() != 0)) ? throw "Cannot divide non zero value by zero"
-    
     // if they already have same denominators just compare numerators
-    : (obj.den() == den()) ? (num() == obj.num())
-       
-    // if both denominators have values
-    // find least common multiple of denominators
-    // find least common divisor of denominators
-    // find smallest of lcm or gcd, gcd cannot equal 1
-    // finds how much the denominator was scaled up so we know what to multiply the numerator by
-    // multiplies it out to get numerator values of this and obj to compare
-    // returns comparison
-    : (obj.den() != 0 && den() != 0) ? lcm(obj.den(), den()) / den() * num() == lcm(obj.den(), den()) / obj.den() * obj.num()
+    : (obj.den() == den()) ? (num() >= obj.num())
     
-    // must be case 0/0 == 0/0 but the input operator does not support dividing by 0 (e.g., 0/0) so this is extraneous
+    // If denominators non-zero divide lowest commonTerm by denominator to get scale factor then multiply scale factor by numerator for each to compare numerators
+    : (obj.den() != 0 && den() != 0) ? commonTerm / den() * num() >= commonTerm / obj.den() * obj.num()
+    
+    // Must be case 0/0 >= 0/0 but the input operator does not support dividing by 0 (e.g., 0/0) so this is extraneous
     : 1;
 }
 
-bool Rational::operator!=(Rational& obj) {
-    return ((double)gcd(obj.den(), den()) != 1)
-    ? ((double)gcd(obj.den(), den()) / den() * num()) != ((double)gcd(obj.den(), den()) / obj.den() * obj.num())
-    : ((double)lcm(obj.den(), den()) / den() * num()) != ((double)lcm(obj.den(), den()) / obj.den() * obj.num());
+// Less than or equal to operand
+bool Rational::operator<=(Rational& obj)
+{
+    // finds lowest of gcd and lcm where gcd cannot equal 1
+    double commonTerm = simplify(obj.den(), den());
+    
+    return
+    
+    // if both numerators are zero return true
+    (obj.num() == 0 && num() == 0) ? 1
+    
+    // if both numerators are the same and both denominators are the same return true
+    : (obj.num() == num() && obj.den() == den()) ? 1
+    
+    // if they already have same denominators just compare numerators
+    : (obj.den() == den()) ? (num() <= obj.num())
+    
+    // If denominators non-zero divide lowest commonTerm by denominator to get scale factor then multiply scale factor by numerator for each to compare numerators
+    : (obj.den() != 0 && den() != 0) ? commonTerm / den() * num() <= commonTerm / obj.den() * obj.num()
+    
+    // Must be case 0/0 <= 0/0 but the input operator does not support dividing by 0 (e.g., 0/0) so this is extraneous
+    : 1;
 }
 
-//// cheesed version
-//bool Rational::operator!=(Rational& obj) {
-//    return !(*this == obj);
-//}
+
+// -------------------------------------------------------------------------- //
+// Arithmetic Operators
 
 
-/** less than and greater than operators < > < > < > < */
-/***********/
-
-// same logic as == operator, except returns (numerator1 < numerator2) see lines 192-240
-bool Rational::operator<(Rational& obj) {
-    return ((double)gcd(obj.den(), den()) != 1)
-    ? ((double)gcd(obj.den(), den()) / den() * num()) < ((double)gcd(obj.den(), den()) / obj.den() * obj.num())
-    : ((double)lcm(obj.den(), den()) / den() * num()) < ((double)lcm(obj.den(), den()) / obj.den() * obj.num());
+// Addition operand
+Rational& Rational::operator+(Rational& obj)
+{
+    return
+        
+    // if both numerators are zero return zero
+    (obj.num() == 0 && num() == 0) ? *new Rational()
+    
+    // if both numerators are the same and both denominators are the same return true
+    : (obj.num() == num() && obj.den() == den()) ? *new Rational(num() + num(), den()) // adds num() twice instead of multiplying by 2 (faster?) note* => num == obj.num()
+    
+    // if they already have same denominators just add numerators
+    : (obj.den() == den()) ? *new Rational(num() + obj.num(), den())
+    
+    // If denominators non-zero divide lowest commonTerm by denominator to get scale factor then multiply scale factor by numerator for each to add numerators
+    : (obj.den() != 0 && den() != 0) ? simplify(*new Rational((num() * obj.den() + obj.num() * den()), den() * obj.den()))
+    
+    // Must be case 0/0 + 0/0 but the input operator does not support dividing by 0 (e.g., 0/0) so this is extraneous
+    : *new Rational(); // returns 0/0
 }
 
-// same logic as == operator, except returns (numerator1 > numerator2
-bool Rational::operator>(Rational& obj) {
-    return ((double)gcd(obj.den(), den()) != 1)
-    ? ((double)gcd(obj.den(), den()) / den() * num()) > ((double)gcd(obj.den(), den()) / obj.den() * obj.num())
-    : ((double)lcm(obj.den(), den()) / den() * num()) > ((double)lcm(obj.den(), den()) / obj.den() * obj.num());
+// Subtraction operand
+Rational& Rational::operator-(Rational& obj)
+{
+    return
+    
+    // if both numerators are zero return zero
+    (obj.num() == 0 && num() == 0) ? *new Rational() // returns 0/0
+    
+    // if both numerators are the same and both denominators are the same
+    : (obj.num() == num() && obj.den() == den()) ? *new Rational() // returns 0/0
+
+    // if they already have same denominators just subtract numerators
+    : (obj.den() == den()) ? *new Rational(num() - obj.num(), den())
+    
+    // If denominators non-zero divide lowest commonTerm by denominator to get scale factor then multiply scale factor by numerator for each to add numerators
+    : (obj.den() != 0 && den() != 0) ? simplify(*new Rational((num() * obj.den() - obj.num() * den()), den() * obj.den()))
+    
+    // Must be case 0/0 - 0/0 but the input operator does not support dividing by 0 (e.g., 0/0) so this is extraneous
+    : *new Rational(); // returns 0/0
 }
 
-/** >= OPERATOR >=  >= >= */
-// uncheesed version
-bool Rational::operator>=(Rational& obj) {
-    return ((double)gcd(obj.den(), den()) != 1)
-    ? ((double)gcd(obj.den(), den()) / den() * num()) >= ((double)gcd(obj.den(), den()) / obj.den() * obj.num())
-    : ((double)lcm(obj.den(), den()) / den() * num()) >= ((double)lcm(obj.den(), den()) / obj.den() * obj.num());
+// Multiplication operand
+Rational& Rational::operator*(Rational& obj)
+{
+    return
+    
+    // if either numerators are zero return zero
+    (obj.num() == 0 || num() == 0 || obj.den() == 0 || den() == 0) ? *new Rational() // returns 0/0
+    
+    // multiply common term'd numerator1 by common term'd numerator 2; same to denominators
+    : *new Rational(num() * obj.num(), den() * obj.den());
 }
 
-// cheesed version
-//bool Rational::operator>=(Rational& obj) {
-//    return (*this > obj) || (*this == obj);
-//}
-
-// same concept as == operator
-bool Rational::operator<=(Rational& obj) {
-    return ((double)gcd(obj.den(), den()) != 1)
-    ? ((double)gcd(obj.den(), den()) / den() * num()) <= ((double)gcd(obj.den(), den()) / obj.den() * obj.num())
-    : ((double)lcm(obj.den(), den()) / den() * num()) <= ((double)lcm(obj.den(), den()) / obj.den() * obj.num());
-}
-
-// Arithmetic operators
-Rational& Rational::operator+(Rational& obj) {
-    return ((double)gcd(obj.den(), den()) != 1)
-    ? (obj.num() == 0 && num() == 0) ? *new Rational(0, 0) : *(new Rational((double)gcd(obj.den(), den()) / den() * num() + ((double)gcd(obj.den(), den()) / obj.den() * obj.num()), (double)gcd(obj.den(), den())))
-    : (obj.num() == 0 && num() == 0) ? *new Rational(0, 0) : *(new Rational((double)lcm(obj.den(), den()) / den() * num() + ((double)lcm(obj.den(), den()) / obj.den() * obj.num()), (double)gcd(obj.den(), den())));
-}
-
-Rational& Rational::operator-(Rational& obj) {
-    return ((double)gcd(obj.den(), den()) != 1)
-    ? (obj.num() == 0 && num() == 0) ? *new Rational(0, 0) : *(new Rational((double)gcd(obj.den(), den()) / den() * num() - ((double)gcd(obj.den(), den()) / obj.den() * obj.num()), (double)gcd(obj.den(), den())))
-    : (obj.num() == 0 && num() == 0) ? *new Rational(0, 0) : *(new Rational((double)lcm(obj.den(), den()) / den() * num() - ((double)lcm(obj.den(), den()) / obj.den() * obj.num()), (double)gcd(obj.den(), den())));
-}
-
-Rational& Rational::operator*(Rational& obj) {
-    int gcd1 = (double)gcd(obj.num(), obj.den()), gcd2 = (double)gcd(num(), den());
-    return (obj.num() == 0 && num() == 0)
-        ? *new Rational(0, 0)
-        : (gcd1 != 1) && (gcd2 != 1)
-            ? *new Rational(gcd1 * gcd2, 1)
-            : *new Rational(obj.num() * num(), obj.den() * den());
-}
-
-Rational& Rational::operator/(Rational& obj) {
-    int gcd1 = (double)gcd(num(), den()), gcd2 = (double)gcd(obj.num(), obj.den());
-    return (obj.num() == 0 && num() == 0)
-        ? *new Rational(0, 0)
-        : (gcd1 != 1) && (gcd2 != 1)
-            ? *new Rational(gcd1 / gcd2, 1)
-            : *new Rational(num() / obj.num(), den() / obj.den());
+// Division operand
+Rational& Rational::operator/(Rational& obj)
+{
+    return
+    
+    // if either numerators are zero return zero
+    (obj.num() == 0 || num() == 0 || obj.den() == 0 || den() == 0) ? *new Rational() // is implied that if any denom == 0 then numr also == 0 by constructor def
+    
+    // n1/d1 / n2/d2 == n1/d1 * d2/n1
+    : simplify(*new Rational(num() * obj.den(), den() * obj.num()));
 }

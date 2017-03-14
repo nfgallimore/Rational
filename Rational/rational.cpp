@@ -183,68 +183,68 @@ Rational::Rational(int n, int d) {
 // FFFT
 
 // abstract version
-bool Rational::operator==(Rational& obj) {
-    return
-    (obj.num() == 0 && num() == 0)
-        ? 1
-    : (obj.num() == num() && obj.den() == den())
-        ? 1
-    : (obj.den() == 0 && den() == 0 && (obj.num() != 0 || num() != 0))
-        ? throw "Cannot divide non zero value by zero"
-    : (obj.den() != 0 && den() != 0)
-        ? lcm(obj.den(), den()) / den() * num() == lcm(obj.den(), den()) / obj.den() * obj.num()
-    : 1;
-}
-
-// clear version
 //bool Rational::operator==(Rational& obj) {
-//    
-//    // if both numerators are zero return true
-//    if (obj.num() == 0 && num() == 0) {
-//        return true;
-//    }
-//    
-//    // if both numerators are the same and both denominators are the same return true
-//    else if (obj.num() == num() && obj.den() == den()) {
-//        return true; // should catch 0/0 == 0/0 case here but provided >> operator overloader will not accept 0/0 == 0/0
-//    }
-//    
-//    // if both denominators are 0 and at least one of the numerators is not 0 throw exception
-//    else if (obj.den() == 0 && den() == 0 && (obj.num() != 0 || num() != 0)) {
-//        throw "Non zero numerator with zero denominator";
-//    }
-//    
-//    // if they are already have the same denominators just compare numerators
-//    if (obj.den() == den()) {
-//        return (num() == obj.num());
-//    }
-//    
-//    // if both denominators have values
-//    else if (obj.den() != 0 && den() != 0) {
-//        
-//        // find least common multiple of denominators
-//        double commonMult = (double)lcm(obj.den(), den())
-//        
-//        // find least common divisor of denominators
-//        , commonDiv = ((double)gcd(obj.den(), den()))
-//        
-//        // find smallest of lcm or gcd, gcd cannot equal 1
-//        , commonTerm = ((commonMult > commonDiv) && (commonDiv != 1)) ? commonDiv : commonMult
-//        
-//        // finds how much the denominator was scaled up so we know what to multiply the numerator by
-//        , factor1 = commonTerm / den()
-//        , factor2 = commonTerm / obj.den() // using extra memory here for sake of clarity
-//        
-//        // multiplies it out to get numerator values of this and obj to compare
-//         , numerator1 = factor1 * num()
-//        , numerator2 = factor2 * obj.num();
-//        
-//        // returns comparison
-//        return (numerator1 == numerator2);
-//    }
-//    // must be case 0/0 == 0/0 but the input operator does not support dividng by 0 (e.g., 0/0)
-//    else return true; // shouldn't be extraneous case but is
+//    return
+//    (obj.num() == 0 && num() == 0)
+//        ? 1
+//    : (obj.num() == num() && obj.den() == den())
+//        ? 1
+//    : (obj.den() == 0 && den() == 0 && (obj.num() != 0 || num() != 0))
+//        ? throw "Cannot divide non zero value by zero"
+//    : (obj.den() != 0 && den() != 0)
+//        ? lcm(obj.den(), den()) / den() * num() == lcm(obj.den(), den()) / obj.den() * obj.num()
+//    : 1;
 //}
+
+//clear version
+bool Rational::operator==(Rational& obj) {
+    
+    // if both numerators are zero return true
+    if (obj.num() == 0 && num() == 0) {
+        return true;
+    }
+    
+    // if both numerators are the same and both denominators are the same return true
+    else if (obj.num() == num() && obj.den() == den()) {
+        return true; // should catch 0/0 == 0/0 case here but provided >> operator overloader will not accept 0/0 == 0/0
+    }
+    
+    // if both denominators are 0 and at least one of the numerators is not 0 throw exception
+    else if (obj.den() == 0 && den() == 0 && (obj.num() != 0 || num() != 0)) {
+        throw "Non zero numerator with zero denominator";
+    }
+    
+    // if they are already have the same denominators just compare numerators
+    if (obj.den() == den()) {
+        return (num() == obj.num());
+    }
+    
+    // if both denominators have values
+    else if (obj.den() != 0 && den() != 0) {
+        
+        // find least common multiple of denominators
+        double commonMult = (double)lcm(obj.den(), den())
+        
+        // find least common divisor of denominators
+        , commonDiv = ((double)gcd(obj.den(), den()))
+        
+        // find smallest of lcm or gcd, gcd cannot equal 1
+        , commonTerm = ((commonMult > commonDiv) && (commonDiv != 1)) ? commonDiv : commonMult
+        
+        // finds how much the denominator was scaled up so we know what to multiply the numerator by
+        , factor1 = commonTerm / den()
+        , factor2 = commonTerm / obj.den() // using extra memory here for sake of clarity
+        
+        // multiplies it out to get numerator values of this and obj to compare
+         , numerator1 = factor1 * num()
+        , numerator2 = factor2 * obj.num();
+        
+        // returns comparison
+        return (numerator1 == numerator2);
+    }
+    // must be case 0/0 == 0/0 but the input operator does not support dividng by 0 (e.g., 0/0)
+    else return true; // shouldn't be extraneous case but is
+}
 
 
 // non cheesed version

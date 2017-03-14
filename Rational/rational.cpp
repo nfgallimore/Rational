@@ -46,6 +46,13 @@ simplify(int a, int b) {
     return (div != 1) ? div : lcm(a, b);
 }
 
+
+Rational&
+simplify(Rational& obj) {
+    double factor = simplify(obj.num(), obj.den());
+    return * new Rational(obj.num() / factor, obj.den() / factor);
+}
+
 // -------------------------------------------------------------------------- //
 // Rational implementation
 

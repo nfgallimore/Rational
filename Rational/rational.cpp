@@ -312,11 +312,25 @@ Rational& Rational::operator*(Rational& obj) {
             : *new Rational(obj.num() * num(), obj.den() * den());
 }
 
-Rational& Rational::operator/(Rational& obj) {
-    int gcd1 = (double)gcd(num(), den()), gcd2 = (double)gcd(obj.num(), obj.den());
-    return (obj.num() == 0 && num() == 0)
-        ? *new Rational(0, 0)
-        : (gcd1 != 1) && (gcd2 != 1)
-            ? *new Rational(gcd1 / gcd2, 1)
-            : *new Rational(num() / obj.num(), den() / obj.den());
+/* DOESNT WORK */
+//Rational& Rational::operator/(Rational& obj) {
+//    int gcd1 = (double)gcd(num(), den()), gcd2 = (double)gcd(obj.num(), obj.den());
+//    return (obj.num() == 0 && num() == 0)
+//        ? *new Rational(0, 0)
+//        : (gcd1 != 1) && (gcd2 != 1)
+//            ? *new Rational(gcd1 / gcd2, 1)
+//            : *new Rational(num() / obj.num(), den() / obj.den());
+//}
+
+
+// Division operand
+Rational& Rational::operator/(Rational& obj)
+{
+    return
+    
+    // if either numerators are zero return zero
+    (obj.num() == 0 || num() == 0 || obj.den() == 0 || den() == 0) ? *new Rational() // is implied that if any denom == 0 then numr also == 0 by constructor def
+    
+    // n1/d1 / n2/d2 == n1/d1 * d2/n1
+    : simplify(*new Rational(num() * obj.den(), den() * obj.num()));
 }

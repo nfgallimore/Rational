@@ -319,17 +319,6 @@ Rational& Rational::operator*(Rational& obj) {
             : *new Rational(obj.num() * num(), obj.den() * den());
 }
 
-/* DOESNT WORK */
-//Rational& Rational::operator/(Rational& obj) {
-//    int gcd1 = (double)gcd(num(), den()), gcd2 = (double)gcd(obj.num(), obj.den());
-//    return (obj.num() == 0 && num() == 0)
-//        ? *new Rational(0, 0)
-//        : (gcd1 != 1) && (gcd2 != 1)
-//            ? *new Rational(gcd1 / gcd2, 1)
-//            : *new Rational(num() / obj.num(), den() / obj.den());
-//}
-
-
 // Division operand
 Rational& Rational::operator/(Rational& obj)
 {
